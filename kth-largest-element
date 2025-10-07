@@ -1,0 +1,48 @@
+class Solution {
+   int size = 0; 
+
+    public static void insert(int element, ArrayList<Integer> arr) {
+        arr.add(element);
+        int index = arr.size() - 1;
+        while (index > 0) {
+            int parent = (index - 1) / 2;
+            if (arr.get(index) < arr.get(parent)) {
+                int temp = arr.get(index);
+                arr.set(index, arr.get(parent));
+                arr.set(parent, temp);
+                index = parent;
+            } else break;
+        }
+    }
+
+    public static void delete(ArrayList<Integer> arr) {
+        int n = arr.size();
+        if (n == 0) return;
+        arr.set(0, arr.get(n - 1));
+        arr.remove(n - 1);
+        int i = 0;
+        n = arr.size();
+        while (true) {
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
+            int smallest = i;
+            if (left < n && arr.get(left) < arr.get(smallest)) smallest = left;
+            if (right < n && arr.get(right) < arr.get(smallest)) smallest = right;
+            if (smallest != i) {
+                int temp = arr.get(i);
+                arr.set(i, arr.get(smallest));
+                arr.set(smallest, temp);
+                i = smallest;
+            } else break;
+        }
+    }
+
+    public int findKthLargest(int[] nums, int k) {
+        ArrayList<Integer> arr = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            insert(nums[i], arr);
+            if (arr.size() > k) delete(arr);
+        }
+        return arr.get(0);
+    }
+}

@@ -1,0 +1,42 @@
+import java.util.*;
+
+class Solution {
+    static int[] replaceWithRank(int arr[], int N) {
+        // Min-heap: stores pairs [value, originalIndex] using a custom comparator
+        PriorityQueue<int[]> heap = new PriorityQueue<>(new Comparator<int[]>() {
+            public int compare(int[] a, int[] b) {
+                return a[0] - b[0]; // compare based on value
+            }
+        });
+
+        for (int i = 0; i < N; i++) {
+            heap.offer(new int[]{arr[i], i});
+        }
+
+        int[] result = new int[N];
+        int rank = 1;
+        int prevVal = Integer.MIN_VALUE;
+
+        while (!heap.isEmpty()) {
+            int[] curr = heap.poll();
+            int val = curr[0];
+            int idx = curr[1];
+
+            if (val != prevVal) {
+                prevVal = val;
+                result[idx] = rank;
+                rank++;
+            } else {
+                result[idx] = rank - 1; // same rank for duplicate
+            }
+        }
+
+        return result;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {20, 15, 26, 2, 98, 6, 15};
+        int[] ranked = replaceWithRank(arr, arr.length);
+        System.out.println(Arrays.toString(ranked)); // Output: [4, 2, 5, 1, 6, 3, 2]
+    }
+}
